@@ -87,7 +87,7 @@ public class MixinServiceQuixotic extends MixinServiceAbstract implements IClass
     
     // Consts
     private static final String STATE_TWEAKER = MixinServiceAbstract.MIXIN_PACKAGE + "EnvironmentStateTweaker";
-    private static final String TRANSFORMER_PROXY_CLASS = "io.github.betterclient.quixotic.service.mojang.Proxy";
+    private static final String TRANSFORMER_PROXY_CLASS = "io.github.betterclient.quixotic.mixin.Proxy";
     
     /**
      * Known re-entrant transformers, other re-entrant transformers will
