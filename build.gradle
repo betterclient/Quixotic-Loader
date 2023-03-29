@@ -1,0 +1,31 @@
+plugins {
+    id 'java'
+}
+
+group 'io.github.betterclient'
+version '1.0'
+
+repositories {
+    mavenCentral()
+    maven {url "https://repo.spongepowered.org/repository/maven-public/"}
+}
+
+def asmVersion = "9.4"
+
+dependencies {
+    implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
+    implementation 'com.google.guava:guava:31.1-jre'
+
+    implementation 'org.spongepowered:mixin:0.8.5'
+    implementation "org.ow2.asm:asm:$asmVersion"
+    implementation "org.ow2.asm:asm-analysis:$asmVersion"
+    implementation "org.ow2.asm:asm-commons:$asmVersion"
+    implementation "org.ow2.asm:asm-tree:$asmVersion"
+    implementation "org.ow2.asm:asm-util:$asmVersion"
+
+    annotationProcessor "org.ow2.asm:asm:$asmVersion"
+    annotationProcessor "org.ow2.asm:asm-analysis:$asmVersion"
+    annotationProcessor "org.ow2.asm:asm-commons:$asmVersion"
+    annotationProcessor "org.ow2.asm:asm-tree:$asmVersion"
+    annotationProcessor "org.ow2.asm:asm-util:$asmVersion"
+}
