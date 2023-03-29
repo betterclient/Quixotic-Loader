@@ -24,11 +24,8 @@
  */
 package io.github.betterclient.quixotic.mixin;
 
-import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import io.github.betterclient.quixotic.QuixoticClassLoader;
 import org.spongepowered.asm.service.IClassTracker;

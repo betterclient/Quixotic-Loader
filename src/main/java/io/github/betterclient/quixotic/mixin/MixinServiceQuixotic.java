@@ -470,7 +470,8 @@ public class MixinServiceQuixotic extends MixinServiceAbstract implements IClass
         } catch (Exception ex) {
             return null;
         } finally {
-            Closeables.closeQuietly(classStream);
+            assert classStream != null;
+            classStream.close();
         }
     }
     
