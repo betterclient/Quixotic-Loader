@@ -4,6 +4,16 @@ A java wrapper that enable usage of mixins.
 
 ### Usage 
 
+````groovy
+maven { url 'https://jitpack.io' }
+
+dependencies {
+    implementation 'com.github.betterclient:Quixotic-Loader:Tag'
+}
+````
+
+Replace `Tag` with the build number.
+
 #### Create a new class for your application.
 
 ````java
