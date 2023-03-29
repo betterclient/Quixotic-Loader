@@ -29,7 +29,7 @@ import org.spongepowered.asm.service.IGlobalPropertyService;
 import org.spongepowered.asm.service.IPropertyKey;
 
 /**
- * Global property service backed by LaunchWrapper blackboard
+ * Global property service backed by Quixotic trickery
  */
 public class Blackboard implements IGlobalPropertyService {
     

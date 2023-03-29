@@ -75,7 +75,7 @@ import com.google.common.io.ByteStreams;
 import com.google.common.io.Closeables;
 
 /**
- * Mixin service for launchwrapper
+ * Mixin service for quixotic
  */
 public class MixinServiceQuixotic extends MixinServiceAbstract implements IClassProvider, IClassBytecodeProvider, ITransformerProvider {
 

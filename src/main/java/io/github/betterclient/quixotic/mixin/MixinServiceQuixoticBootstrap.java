@@ -28,7 +28,7 @@ import io.github.betterclient.quixotic.Quixotic;
 import org.spongepowered.asm.service.IMixinServiceBootstrap;
 
 /**
- * Bootstrap for LaunchWrapper service
+ * Bootstrap for Quixotic service
  */
 public class MixinServiceQuixoticBootstrap implements IMixinServiceBootstrap {
 
