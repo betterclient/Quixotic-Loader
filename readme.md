@@ -37,15 +37,21 @@ public class ExampleApplication implements QuixoticApplication {
 
 > What to do now?
 
-: 1: You can add any mixin configurations using the `getMixinConfigurations` method's return.
+> 1: You can add any mixin configurations using the `getMixinConfigurations` method's return. 
 
-: 2: Change the `getMainClass` method to return your application's main class.
+> 2: Change the `getMainClass` method to return your application's main class. 
 
-: 3: Load any ClassTransformer's you want using `loadApplicationManager`.
+> 3: Load any ClassTransformer's you want using `loadApplicationManager`. 
 
-: 4: Last of all change your app's version and name.
+> 4: Last of all change your app's version and name.
 
-#### Create the java main to add your application class.
+#### Adding the quixoticapp argument
+
+> This step is optional if you want to use the MinecraftVanillaApplication or already have it in the arguments.
+
+> You can do the following using the Quixotic class as the main class. 
+
+#### Create the java main to add your application class
 
 ````java
 import java.util.ArrayList;
