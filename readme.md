@@ -2,9 +2,7 @@
 
 A java wrapper that enable usage of mixins.
 
-### Usage 
-
-Replace `Tag` with the build number.
+### Usage
 
 #### Create a new class for your application.
 
