@@ -41,19 +41,7 @@ shadowJar {
 
     }
 
-    transform(DontIncludeResourceTransformer) {
-        resource = "/META-INF/services/org.spongepowered.asm.service.IGlobalPropertyService"
-    }
-
-    transform(DontIncludeResourceTransformer) {
-        resource = "/META-INF/services/org.spongepowered.asm.service.IMixinService"
-    }
-
-    transform(DontIncludeResourceTransformer) {
-        resource = "/META-INF/services/org.spongepowered.asm.service.IMixinServiceBootstrap"
-    }
-
     configurations = [project.configurations.shade]
-    duplicatesStrategy DuplicatesStrategy.EXCLUDE //prevent duplicates
+    duplicatesStrategy DuplicatesStrategy.INCLUDE //prevent duplicates
     classifier "" //prevent creation of unshadowed jar
 }

@@ -110,55 +110,45 @@ public class Quixotic {
 
         //Loop through all .class files in jarFile and load all to transform them
 
-        FileInputStream istr = new FileInputStream(jarFile);
-
-        File jarfile2 = File.createTempFile("whodis", ".jar");
-        jarfile2.deleteOnExit();
-
-        FileOutputStream sttr = new FileOutputStream(jarfile2);
-        FileOutputStream sttrr = new FileOutputStream(saveTo);
-
-        byte[] write = istr.readAllBytes();
-
-        sttr.write(write);
-        sttrr.write(write);
-
-        sttrr.close();
-        sttr.close();
-        istr.close();
-
-        JarFile file = new JarFile(jarfile2);
+        JarFile file = new JarFile(jarFile);
         Enumeration<JarEntry> entries = file.entries();
-
+        JarOutputStream jarOutputStream = new JarOutputStream(new FileOutputStream(saveTo));
         while (entries.hasMoreElements()) {
             JarEntry entry = entries.nextElement();
 
-            if(!entry.getName().endsWith(".class")) continue;
+            if(!entry.getName().endsWith(".class")) {
+                InputStream str = file.getInputStream(entry);
+
+                jarOutputStream.putNextEntry(new ZipEntry(entry.getName()));
+                jarOutputStream.write(str.readAllBytes());
+
+                str.close();
+                jarOutputStream.closeEntry();
+
+                continue;
+            }
 
             String className = entry.getName().substring(0, entry.getName().lastIndexOf("."));
             className = className.replace('/', '.');
 
-            InputStream abc = file.getInputStream(entry);
-            byte[] beforeSRC = abc.readAllBytes();
-            abc.close();
-
-            Class<?> loadedClass = Class.forName(className, false, classLoader);
-            byte[] src = classLoader.cachedClassBytes.get(classLoader.cachedClassNames.indexOf(className));
-
-            if(src == beforeSRC) continue;
+            byte[] src = classLoader.cachedClassBytes.get(classLoader.cachedClasses.indexOf(Class.forName(className, false, classLoader)));
 
             File f = File.createTempFile(className.substring(className.lastIndexOf(".")), ".class");
             f.deleteOnExit();
 
-            FileOutputStream str = new FileOutputStream(f);
-            str.write(src);
-            str.close();
-
-            JarFile saved = this.addFileToExistingZip(saveTo, f, entry.getName());
-            saved.close();
+            jarOutputStream.putNextEntry(new ZipEntry(entry.getName()));
+            jarOutputStream.write(src);
+            jarOutputStream.closeEntry();
         }
 
         file.close();
+        jarOutputStream.close();
+
+        if(args.contains("--skipmixindep")) {
+            LOGGER.debug("Done!");
+            System.exit(0);
+            return;
+        }
 
         JarOutputStream out = new JarOutputStream(Files.newOutputStream(saveTo.toPath()));
         JarFile quixoticJar = new JarFile(new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath()));
@@ -168,7 +158,7 @@ public class Quixotic {
         while(entriess.hasMoreElements()) { //Add mixin source and your app to final jar
             nextEntry = entriess.nextElement();
 
-            if(nextEntry.getName().startsWith("io/github/betterclient/quixotic") && !nextEntry.getName().contains(".")) continue;
+            if(!nextEntry.getName().startsWith("org/spongepowered/asm") && !nextEntry.getName().contains(".")) continue;
 
             InputStream str = quixoticJar.getInputStream(nextEntry);
 
@@ -180,7 +170,6 @@ public class Quixotic {
         }
 
         LOGGER.debug("Done!");
-
         System.exit(0);
     }
 
@@ -206,65 +195,5 @@ public class Quixotic {
             }
         }
         return urls;
-    }
-
-    /**
-     *
-     * @param zipFile file
-     * @param versionFile change
-     * @return fixed jarfile
-     * @throws Exception fuck you
-     */
-    private JarFile addFileToExistingZip(File zipFile, File versionFile, String file) throws Exception {
-        File tempFile = File.createTempFile(zipFile.getName(), null);
-        tempFile.delete();
-
-        boolean renameOk=zipFile.renameTo(tempFile);
-        if (!renameOk)
-        {
-            throw new RuntimeException("could not rename the file "+zipFile.getAbsolutePath()+" to "+tempFile.getAbsolutePath());
-        }
-        byte[] buf = new byte[4096 * 1024];
-
-        JarInputStream zin = new JarInputStream(new FileInputStream(tempFile));
-        JarOutputStream out = new JarOutputStream(new FileOutputStream(zipFile));
-
-        ZipEntry entry = zin.getNextEntry();
-        while (entry != null) {
-            String name = entry.getName();
-            boolean toBeDeleted = false;
-            if (file.equals(entry.getName())) {
-                toBeDeleted = true;
-            }
-
-            if(!toBeDeleted){
-                out.putNextEntry(new ZipEntry(name));
-
-                int len;
-                while ((len = zin.read(buf)) > 0) {
-                    out.write(buf, 0, len);
-                }
-            }
-            entry = zin.getNextEntry();
-        }
-
-        zin.close();
-
-        InputStream in = new FileInputStream(versionFile);
-
-        out.putNextEntry(new JarEntry(file));
-
-        int len;
-        while ((len = in.read(buf)) > 0) {
-            out.write(buf, 0, len);
-        }
-
-        out.closeEntry();
-        in.close();
-
-        out.close();
-        tempFile.delete();
-
-        return new JarFile(zipFile);
     }
 }
