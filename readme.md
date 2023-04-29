@@ -2,6 +2,12 @@
 
 A java wrapper that enable usage of mixins.
 
+Welcome to the Quixotic .jar repo, this branch of Quixotic transformation of .jar files.
+
+Example args of Quixotic Jar: `java -jar Quixotic.jar --jarfile <input.jar full path> --savefile <output.jar full path> --quixoticapp <application location>`
+
+Since Quixotic.jar is a somewhat standalone app the build.gradle has been modified to have all dependencies included with it.
+
 ### Usage
 
 #### Create a new class for your application.

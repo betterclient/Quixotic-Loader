@@ -1,5 +1,8 @@
+import com.github.jengelman.gradle.plugins.shadow.transformers.DontIncludeResourceTransformer
+
 plugins {
     id 'java'
+    id "com.github.johnrengelman.shadow" version "2.0.4"
 }
 
 group 'io.github.betterclient'
@@ -10,24 +13,47 @@ repositories {
     maven {url "https://repo.spongepowered.org/repository/maven-public/"}
 }
 
-def asmVersion = "9.4"
+configurations {
+    shade
+    implementation.extendsFrom(shade)
+}
+
+def asmVersion = "9.5"
 
 dependencies {
-    implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
-    implementation 'com.google.guava:guava:31.1-jre'
+    shade 'org.apache.logging.log4j:log4j-core:2.20.0'
 
-    implementation 'org.spongepowered:mixin:0.8.5'
-    implementation "org.ow2.asm:asm:$asmVersion"
-    implementation "org.ow2.asm:asm-analysis:$asmVersion"
-    implementation "org.ow2.asm:asm-commons:$asmVersion"
-    implementation "org.ow2.asm:asm-tree:$asmVersion"
-    implementation "org.ow2.asm:asm-util:$asmVersion"
+    shade 'com.google.guava:guava:31.1-jre'
+    shade 'com.google.code.gson:gson:2.10.1'
 
-    annotationProcessor "org.ow2.asm:asm:$asmVersion"
-    annotationProcessor "org.ow2.asm:asm-analysis:$asmVersion"
-    annotationProcessor "org.ow2.asm:asm-commons:$asmVersion"
-    annotationProcessor "org.ow2.asm:asm-tree:$asmVersion"
-    annotationProcessor "org.ow2.asm:asm-util:$asmVersion"
+    shade 'org.spongepowered:mixin:0.8.5'
+
+    shade "org.ow2.asm:asm:$asmVersion"
+    shade "org.ow2.asm:asm-tree:$asmVersion"
+    shade "org.ow2.asm:asm-util:$asmVersion"
+    shade "org.ow2.asm:asm-commons:$asmVersion"
 }
 
 sourceCompatibility = targetCompatibility = 17
+
+shadowJar {
+    dependencies {
+
+    }
+
+    transform(DontIncludeResourceTransformer) {
+        resource = "/META-INF/services/org.spongepowered.asm.service.IGlobalPropertyService"
+    }
+
+    transform(DontIncludeResourceTransformer) {
+        resource = "/META-INF/services/org.spongepowered.asm.service.IMixinService"
+    }
+
+    transform(DontIncludeResourceTransformer) {
+        resource = "/META-INF/services/org.spongepowered.asm.service.IMixinServiceBootstrap"
+    }
+
+    configurations = [project.configurations.shade]
+    duplicatesStrategy DuplicatesStrategy.EXCLUDE //prevent duplicates
+    classifier "" //prevent creation of unshadowed jar
+}

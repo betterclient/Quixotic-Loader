@@ -27,6 +27,7 @@ public class QuixoticClassLoader extends URLClassLoader {
     public List<String> excludeFromTransform = new ArrayList<>();
     public List<String> nonLoadableClasses = new ArrayList<>();
     public List<String> cachedClassNames = new ArrayList<>();
+    public List<byte[]> cachedClassBytes = new ArrayList<>();
     public List<Class<?>> cachedClasses = new ArrayList<>();
     private List<String> negativeResourceCache = new ArrayList<>();
     private Map<String,byte[]> resourceCache = new ConcurrentHashMap<>(1000);
@@ -141,6 +142,7 @@ public class QuixoticClassLoader extends URLClassLoader {
             CodeSource codeSource = urlConnection == null ? null : new CodeSource(urlConnection.getURL(), signers);
             Class<?> clazz = defineClass(name, transformedClass, 0, transformedClass.length, codeSource);
 
+            this.cachedClassBytes.add(transformedClass);
             this.cachedClasses.add(clazz);
             this.cachedClassNames.add(name);
 
