@@ -103,7 +103,7 @@ public class MixinServiceQuixotic extends MixinServiceAbstract implements IClass
     /**
      * Log4j2 logger
      */
-    private static final Logger logger = LogManager.getLogger();
+    private static final Logger logger = LogManager.getLogger("MixinServiceQuixotic");
 
     /**
      * Utility for reflecting into Launch ClassLoader

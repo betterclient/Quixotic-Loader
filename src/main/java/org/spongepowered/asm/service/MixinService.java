@@ -170,7 +170,7 @@ public final class MixinService {
 
     private IMixinService initService() {
         try {
-            return (IMixinService) Class.forName("io.github.betterclient.quixotic.mixin.MixinServiceQuixoticBootstrap", false, this.getClass().getClassLoader()).getConstructor().newInstance();
+            return (IMixinService) Class.forName("io.github.betterclient.quixotic.mixin.MixinServiceQuixotic", false, this.getClass().getClassLoader()).getConstructor().newInstance();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

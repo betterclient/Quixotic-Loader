@@ -142,7 +142,6 @@ public class Quixotic {
         }
 
         file.close();
-        jarOutputStream.close();
 
         if(args.contains("--skipmixindep")) {
             LOGGER.debug("Done!");
@@ -150,7 +149,6 @@ public class Quixotic {
             return;
         }
 
-        JarOutputStream out = new JarOutputStream(Files.newOutputStream(saveTo.toPath()));
         JarFile quixoticJar = new JarFile(new File(getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath()));
         Enumeration<JarEntry> entriess = quixoticJar.entries();
 
@@ -158,16 +156,19 @@ public class Quixotic {
         while(entriess.hasMoreElements()) { //Add mixin source and your app to final jar
             nextEntry = entriess.nextElement();
 
-            if(!nextEntry.getName().startsWith("org/spongepowered/asm") && !nextEntry.getName().contains(".")) continue;
+            if(!nextEntry.getName().startsWith("org/spongepowered/asm") || !nextEntry.getName().contains(".")) continue;
 
             InputStream str = quixoticJar.getInputStream(nextEntry);
 
-            out.putNextEntry(new ZipEntry(nextEntry.getName()));
-            out.write(str.readAllBytes());
+            jarOutputStream.putNextEntry(new ZipEntry(nextEntry.getName()));
+            jarOutputStream.write(str.readAllBytes());
 
-            out.closeEntry();
+            jarOutputStream.closeEntry();
             str.close();
         }
+
+        jarOutputStream.close();
+        quixoticJar.close();
 
         LOGGER.debug("Done!");
         System.exit(0);
