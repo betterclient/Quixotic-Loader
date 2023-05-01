@@ -153,7 +153,7 @@ public class QuixoticClassLoader extends URLClassLoader {
         }
     }
 
-    private byte[] transformClass(String name, byte[] classBytes) {
+    public byte[] transformClass(String name, byte[] classBytes) {
         for(ClassTransformer transformer : this.transformers) {
             byte[] output = transformer.transform(name, classBytes);
 

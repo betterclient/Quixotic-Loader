@@ -131,10 +131,11 @@ public class Quixotic {
             String className = entry.getName().substring(0, entry.getName().lastIndexOf("."));
             className = className.replace('/', '.');
 
-            byte[] src = classLoader.cachedClassBytes.get(classLoader.cachedClasses.indexOf(Class.forName(className, false, classLoader)));
+            InputStream str = file.getInputStream(entry);
+            byte[] src = str.readAllBytes();
+            str.close();
 
-            File f = File.createTempFile(className.substring(className.lastIndexOf(".")), ".class");
-            f.deleteOnExit();
+            src = classLoader.transformClass(className, src);
 
             jarOutputStream.putNextEntry(new ZipEntry(entry.getName()));
             jarOutputStream.write(src);
