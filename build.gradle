@@ -34,7 +34,7 @@ dependencies {
     shade "org.ow2.asm:asm-commons:$asmVersion"
 }
 
-sourceCompatibility = targetCompatibility = 17
+sourceCompatibility = targetCompatibility = 8
 
 shadowJar {
     dependencies {

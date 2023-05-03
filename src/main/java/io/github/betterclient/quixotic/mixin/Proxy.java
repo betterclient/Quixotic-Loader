@@ -4,6 +4,7 @@ import io.github.betterclient.quixotic.ClassTransformer;
 import org.spongepowered.asm.service.ILegacyClassTransformer;
 import org.spongepowered.asm.service.MixinService;
 
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,7 @@ public final class Proxy implements ClassTransformer, ILegacyClassTransformer {
 
     static {
         try {
-            var ccc = Class.forName("org.spongepowered.asm.mixin.transformer.MixinTransformer").getDeclaredConstructor();
+            Constructor ccc = Class.forName("org.spongepowered.asm.mixin.transformer.MixinTransformer").getDeclaredConstructor();
             ccc.setAccessible(true);
             transformer = ccc.newInstance();
         } catch (Exception e) {

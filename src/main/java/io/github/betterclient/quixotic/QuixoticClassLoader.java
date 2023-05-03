@@ -117,19 +117,20 @@ public class QuixoticClassLoader extends URLClassLoader {
             CodeSigner[] signers = null;
 
             if (lastDot > -1 && !name.startsWith("net.minecraft.")) {
-                if (urlConnection instanceof final JarURLConnection jarURLConnection) {
+                if (urlConnection instanceof JarURLConnection) {
+                    JarURLConnection jarURLConnection = (JarURLConnection) urlConnection;
                     final JarFile jarFile = jarURLConnection.getJarFile();
 
                     if (jarFile != null && jarFile.getManifest() != null) {
                         final Manifest manifest = jarFile.getManifest();
                         final JarEntry entry = jarFile.getJarEntry(fileName);
 
-                        Package pkg = getDefinedPackage(packageName);
+                        Package pkg = getPackage(packageName);
                         signers = entry.getCodeSigners();
                         if (pkg == null) pkg = definePackage(packageName, manifest, jarURLConnection.getJarFileURL());
                     }
                 } else {
-                    Package pkg = getDefinedPackage(packageName);
+                    Package pkg = getPackage(packageName);
                     if (pkg == null) {
                         pkg = definePackage(packageName, null, null, null, null, null, null, null);
                     }
@@ -208,7 +209,9 @@ public class QuixoticClassLoader extends URLClassLoader {
             }
             classStream = classResource.openStream();
 
-            byte[] data = classStream.readAllBytes();
+            byte[] data = new byte[classStream.available()];
+
+            classStream.read(data);
             resourceCache.put(name, data);
             return data;
         } finally {

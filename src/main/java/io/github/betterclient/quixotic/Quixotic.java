@@ -11,9 +11,11 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.util.*;
 import java.util.jar.JarEntry;
@@ -39,18 +41,21 @@ public class Quixotic {
         if(args[0].equals("--jarfile"))
             jarFile = new File(args[1]);
 
-        new Quixotic().launch(new ArrayList<>(List.of(args)));
+        new Quixotic().launch(new ArrayList<>(Arrays.asList(args)));
     }
 
-    public Quixotic() {
-        ArrayList<URL> urls = new ArrayList<>(List.of(this.getURLs()));
-        try {
-            urls.add(jarFile.toURI().toURL());
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+    public Quixotic() throws Exception {
+        ArrayList<URL> urls = new ArrayList<>();
+
+        if(this.getClass().getClassLoader() instanceof URLClassLoader) {
+            urls.addAll(Arrays.asList(((URLClassLoader) this.getClass().getClassLoader()).getURLs()));
+        } else {
+            urls.addAll(Arrays.asList(getURLs()));
         }
 
-        classLoader = new QuixoticClassLoader(urls.toArray(URL[]::new), LOGGER);
+        urls.add(jarFile.toURI().toURL());
+
+        classLoader = new QuixoticClassLoader((URL[]) urls.toArray(), LOGGER);
 
         blackboard = new HashMap<>();
         Thread.currentThread().setContextClassLoader(classLoader);
@@ -97,7 +102,7 @@ public class Quixotic {
 
         MixinBootstrap.getPlatform().inject();
 
-        var method = MixinEnvironment.class.getDeclaredMethod("gotoPhase", MixinEnvironment.Phase.class);
+        Method method = MixinEnvironment.class.getDeclaredMethod("gotoPhase", MixinEnvironment.Phase.class);
         method.setAccessible(true);
         method.invoke(null, MixinEnvironment.Phase.DEFAULT);
         //Mixin trickery end
@@ -120,7 +125,9 @@ public class Quixotic {
                 InputStream str = file.getInputStream(entry);
 
                 jarOutputStream.putNextEntry(new ZipEntry(entry.getName()));
-                jarOutputStream.write(str.readAllBytes());
+                byte[] read = new byte[str.available()];
+                str.read(read);
+                jarOutputStream.write(read);
 
                 str.close();
                 jarOutputStream.closeEntry();
@@ -132,7 +139,8 @@ public class Quixotic {
             className = className.replace('/', '.');
 
             InputStream str = file.getInputStream(entry);
-            byte[] src = str.readAllBytes();
+            byte[] src = new byte[str.available()];
+            str.read(src);
             str.close();
 
             src = classLoader.transformClass(className, src);
@@ -162,7 +170,9 @@ public class Quixotic {
             InputStream str = quixoticJar.getInputStream(nextEntry);
 
             jarOutputStream.putNextEntry(new ZipEntry(nextEntry.getName()));
-            jarOutputStream.write(str.readAllBytes());
+            byte[] read = new byte[str.available()];
+            str.read(read);
+            jarOutputStream.write(read);
 
             jarOutputStream.closeEntry();
             str.close();
