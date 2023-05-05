@@ -54,8 +54,15 @@ public class Quixotic {
         }
 
         urls.add(jarFile.toURI().toURL());
+        URL[] urls1 = new URL[urls.size()];
 
-        classLoader = new QuixoticClassLoader((URL[]) urls.toArray(), LOGGER);
+        int index = 0;
+        for (URL url : urls) {
+            urls1[index] = url;
+            index++;
+        }
+
+        classLoader = new QuixoticClassLoader(urls1, LOGGER);
 
         blackboard = new HashMap<>();
         Thread.currentThread().setContextClassLoader(classLoader);
