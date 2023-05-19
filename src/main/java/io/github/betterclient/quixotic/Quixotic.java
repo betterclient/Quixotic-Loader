@@ -51,7 +51,11 @@ public class Quixotic {
 
         LOGGER.debug("State - Prepare launch");
 
+        this.application.loadApplicationManager(classLoader);
+
         this.loadMixinContext(args);
+
+        LOGGER.debug("State - Mixin Launch");
 
         MixinBootstrap.init();
         Mixins.addConfigurations(this.application.getMixinConfigurations().toArray(new String[0]));
@@ -67,10 +71,6 @@ public class Quixotic {
         method.setAccessible(true);
         method.invoke(null, MixinEnvironment.Phase.DEFAULT);
         //Mixin trickery end
-
-        LOGGER.debug("State - Mixin Launch");
-
-        this.application.loadApplicationManager(classLoader);
 
         LOGGER.debug("State - Load Main Application Class");
 
