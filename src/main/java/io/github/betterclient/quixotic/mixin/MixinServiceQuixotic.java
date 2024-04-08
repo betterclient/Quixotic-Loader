@@ -2,6 +2,7 @@ package io.github.betterclient.quixotic.mixin;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -31,6 +32,7 @@ import org.spongepowered.asm.mixin.throwables.MixinException;
 import org.spongepowered.asm.service.IClassBytecodeProvider;
 import org.spongepowered.asm.service.IClassProvider;
 import org.spongepowered.asm.service.IClassTracker;
+import org.spongepowered.asm.service.IMixinService;
 import org.spongepowered.asm.service.ILegacyClassTransformer;
 import org.spongepowered.asm.service.IMixinAuditTrail;
 import org.spongepowered.asm.service.ITransformer;
@@ -70,6 +72,14 @@ public class MixinServiceQuixotic extends MixinServiceAbstract implements IClass
 
     public MixinServiceQuixotic() {
         this.classLoaderUtil = new QuixoticClassLoaderUtil(Quixotic.classLoader);
+
+        try {
+            Field f = MixinServiceAbstract.class.getDeclaredField("sideName");
+            f.setAccessible(true);
+            f.set(this, Quixotic.getSideName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -415,5 +425,4 @@ public class MixinServiceQuixotic extends MixinServiceAbstract implements IClass
 
         return 0;
     }
-
 }

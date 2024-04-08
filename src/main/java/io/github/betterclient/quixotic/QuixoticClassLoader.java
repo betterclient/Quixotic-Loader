@@ -68,7 +68,7 @@ public class QuixoticClassLoader extends URLClassLoader {
     }
 
     @Override
-    protected void addURL(URL url) {
+    public void addURL(URL url) {
         listURLs.add(url);
         super.addURL(url);
     }

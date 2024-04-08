@@ -8,4 +8,5 @@ public interface QuixoticApplication {
     String getMainClass();
     void loadApplicationManager(QuixoticClassLoader classLoader);
     List<String> getMixinConfigurations();
+    Side getSide();
 }

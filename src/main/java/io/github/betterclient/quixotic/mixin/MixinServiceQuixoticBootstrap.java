@@ -64,5 +64,4 @@ public class MixinServiceQuixoticBootstrap implements IMixinServiceBootstrap {
         Quixotic.classLoader.addExclusion(MixinServiceQuixoticBootstrap.MIXIN_PACKAGE);
         Quixotic.classLoader.addExclusion(MixinServiceQuixoticBootstrap.MIXIN_UTIL_PACKAGE);
     }
-
 }

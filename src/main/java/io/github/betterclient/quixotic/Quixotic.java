@@ -1,5 +1,6 @@
 package io.github.betterclient.quixotic;
 
+import com.llamalad7.mixinextras.MixinExtrasBootstrap;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
@@ -21,16 +22,23 @@ public class Quixotic {
     public QuixoticApplication application;
     public static Logger LOGGER = LogManager.getLogger("Quixotic");
 
+    static Quixotic instance;
+
     public static void main(String[] args) throws Exception {
         new Quixotic().launch(new ArrayList<>(List.of(args)));
     }
 
     public Quixotic() {
+        instance = this;
+
         //The project uses java 17, don't run check
         classLoader = new QuixoticClassLoader(this.getURLs(), LOGGER);
-
         blackboard = new HashMap<>();
         Thread.currentThread().setContextClassLoader(classLoader);
+    }
+
+    public static String getSideName() {
+        return instance.application.getSide().name();
     }
 
     private void launch(List<String> args) throws Exception {
@@ -58,6 +66,7 @@ public class Quixotic {
         LOGGER.debug("State - Mixin Launch");
 
         MixinBootstrap.init();
+        MixinExtrasBootstrap.init();
         Mixins.addConfigurations(this.application.getMixinConfigurations().toArray(new String[0]));
         MixinEnvironment.getDefaultEnvironment().setSide(MixinEnvironment.Side.CLIENT);
 
