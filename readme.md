@@ -32,6 +32,11 @@ public class ExampleApplication implements QuixoticApplication {
     public List<String> getMixinConfigurations() {
         return new ArrayList<>();
     }
+
+    @Override
+    public Side getSide() {
+        return Side.CLIENT;
+    }
 }
 ````
 
@@ -41,13 +46,15 @@ public class ExampleApplication implements QuixoticApplication {
 
 > 2: Change the `getMainClass` method to return your application's main class. 
 
-> 3: Load any ClassTransformer's you want using `loadApplicationManager`. 
+> 3: Change the `getSide` method to return the Side.
 
-> 4: Last of all change your app's version and name.
+> 4: Load any ClassTransformer's you want using `loadApplicationManager`. 
+
+> 5: Last of all change your app's version and name.
 
 #### Adding the quixoticapp argument
 
-> This step is optional if you want to use the MinecraftVanillaApplication or already have it in the arguments.
+> This step is optional if you want to use the TestApplication or already have it in the arguments.
 
 > You can do the following using the Quixotic class as the main class. 
 
