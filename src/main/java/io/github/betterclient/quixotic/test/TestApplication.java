@@ -1,4 +1,4 @@
-package io.github.betterclient.quixotic.app;
+package io.github.betterclient.quixotic.test;
 
 import io.github.betterclient.quixotic.QuixoticApplication;
 import io.github.betterclient.quixotic.QuixoticClassLoader;
@@ -6,11 +6,11 @@ import io.github.betterclient.quixotic.QuixoticClassLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MinecraftVanillaApplication implements QuixoticApplication {
+public class TestApplication implements QuixoticApplication {
 
     @Override
     public String getApplicationName() {
-        return "Minecraft Vanilla";
+        return "Test";
     }
 
     @Override
@@ -20,7 +20,7 @@ public class MinecraftVanillaApplication implements QuixoticApplication {
 
     @Override
     public String getMainClass() {
-        return "net.minecraft.client.main.Main";
+        return "io.github.betterclient.quixotic.test.TestMain";
     }
 
     @Override
@@ -28,6 +28,6 @@ public class MinecraftVanillaApplication implements QuixoticApplication {
 
     @Override
     public List<String> getMixinConfigurations() {
-        return new ArrayList<>();
+        return List.of("test.mixins.json");
     }
 }

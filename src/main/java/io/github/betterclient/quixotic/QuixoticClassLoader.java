@@ -24,12 +24,13 @@ public class QuixoticClassLoader extends URLClassLoader {
     private final List<URL> listURLs;
     public List<ClassTransformer> transformers = new ArrayList<>();
     public List<String> excludeFromSearch = new ArrayList<>();
+    public List<String> unExcludeFromSearch = new ArrayList<>();
     public List<String> excludeFromTransform = new ArrayList<>();
     public List<String> nonLoadableClasses = new ArrayList<>();
     public List<String> cachedClassNames = new ArrayList<>();
     public List<Class<?>> cachedClasses = new ArrayList<>();
-    private List<String> negativeResourceCache = new ArrayList<>();
-    private Map<String,byte[]> resourceCache = new ConcurrentHashMap<>(1000);
+    private final List<String> negativeResourceCache = new ArrayList<>();
+    private final Map<String,byte[]> resourceCache = new ConcurrentHashMap<>(1000);
 
     public static Logger LOGGER;
 
@@ -45,6 +46,8 @@ public class QuixoticClassLoader extends URLClassLoader {
         this.addExclusion("io.github.betterclient.quixotic.");
         this.addExclusion("net.minecraft.launchwrapper.");
 
+        this.addUnExclusion("io.github.betterclient.quixotic.test"); //Dont exclude the test package
+
         this.addTransformerExclusion("javax.");
         this.addTransformerExclusion("argo.");
         this.addTransformerExclusion("org.objectweb.asm.");
@@ -54,6 +57,10 @@ public class QuixoticClassLoader extends URLClassLoader {
 
     public void addExclusion(String exclusion) {
         excludeFromSearch.add(exclusion);
+    }
+
+    public void addUnExclusion(String exclusion) {
+        unExcludeFromSearch.add(exclusion);
     }
 
     public void addTransformerExclusion(String exclusion) {
@@ -89,7 +96,11 @@ public class QuixoticClassLoader extends URLClassLoader {
 
         for (String fromSearch : this.excludeFromSearch) {
             if(name.startsWith(fromSearch)) {
-                return this.parent.loadClass(name);
+                for (String unexclude : this.unExcludeFromSearch) {
+                    if(!name.startsWith(unexclude)) {
+                        return this.parent.loadClass(name);
+                    }
+                }
             }
         }
 

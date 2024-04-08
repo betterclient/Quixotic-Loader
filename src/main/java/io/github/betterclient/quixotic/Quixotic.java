@@ -45,7 +45,7 @@ public class Quixotic {
             args.remove(index - 1);
             args.remove(index - 1);
         } else {
-            this.application = (QuixoticApplication) Class.forName("io.github.betterclient.quixotic.app.MinecraftVanillaApplication").getConstructor().newInstance();
+            this.application = (QuixoticApplication) Class.forName("io.github.betterclient.quixotic.test.TestApplication").getConstructor().newInstance();
             LOGGER.warn("No Application argument could be found, using vanilla application.");
         }
 

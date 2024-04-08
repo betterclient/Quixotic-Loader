@@ -7,7 +7,10 @@ version '1.0'
 
 repositories {
     mavenCentral()
-    maven {url "https://repo.spongepowered.org/repository/maven-public/"}
+    maven {
+        name = 'Fabric'
+        url = 'https://maven.fabricmc.net/'
+    }
 }
 
 def asmVersion = "9.4"
@@ -16,7 +19,9 @@ dependencies {
     implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
     implementation 'com.google.guava:guava:31.1-jre'
 
-    implementation 'org.spongepowered:mixin:0.8.5'
+    implementation "net.fabricmc:sponge-mixin:0.12.5+mixin.0.8.5"
+    implementation "io.github.llamalad7:mixinextras-fabric:0.3.5"
+
     implementation "org.ow2.asm:asm:$asmVersion"
     implementation "org.ow2.asm:asm-analysis:$asmVersion"
     implementation "org.ow2.asm:asm-commons:$asmVersion"

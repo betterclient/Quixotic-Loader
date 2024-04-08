@@ -36,7 +36,7 @@ public class Blackboard implements IGlobalPropertyService {
     /**
      * Property key
      */
-    class Key implements IPropertyKey {
+    static class Key implements IPropertyKey {
         
         private final String key;
 

@@ -1,0 +1,8 @@
+{
+  "minVersion": "0.8.5",
+  "required": true,
+  "package": "io.github.betterclient.quixotic.test.mixin",
+  "mixins": [
+    "TestMixin"
+  ]
+}
