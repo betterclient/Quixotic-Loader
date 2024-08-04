@@ -399,7 +399,12 @@ public class MixinServiceQuixotic extends MixinServiceAbstract implements IClass
 
     @Override
     public ClassNode getClassNode(String className, boolean runTransformers) throws ClassNotFoundException, IOException {
-        return this.getClassNode(className, this.getClassBytes(className, true), ClassReader.EXPAND_FRAMES);
+        return this.getClassNode(className, this.getClassBytes(className, runTransformers), ClassReader.EXPAND_FRAMES);
+    }
+
+    @Override
+    public ClassNode getClassNode(String name, boolean runTransformers, int readerFlags) throws ClassNotFoundException, IOException {
+        return this.getClassNode(name, this.getClassBytes(name, runTransformers), readerFlags);
     }
 
     private ClassNode getClassNode(String className, byte[] classBytes, int flags) {

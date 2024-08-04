@@ -13,14 +13,14 @@ repositories {
     }
 }
 
-def asmVersion = "9.4"
+def asmVersion = "9.7"
 
 dependencies {
     implementation 'org.apache.logging.log4j:log4j-core:2.20.0'
-    implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'com.google.guava:guava:33.2.1-jre'
 
-    implementation "net.fabricmc:sponge-mixin:0.12.5+mixin.0.8.5"
-    implementation "io.github.llamalad7:mixinextras-fabric:0.3.5"
+    implementation "net.fabricmc:sponge-mixin:0.15.0+mixin.0.8.7"
+    implementation "io.github.llamalad7:mixinextras-fabric:0.4.0"
 
     implementation "org.ow2.asm:asm:$asmVersion"
     implementation "org.ow2.asm:asm-analysis:$asmVersion"
