@@ -118,7 +118,7 @@ public class MixinServiceQuixotic extends MixinServiceAbstract implements IClass
 
     @Override
     public CompatibilityLevel getMaxCompatibilityLevel() {
-        return CompatibilityLevel.MAX_SUPPORTED;
+        return CompatibilityLevel.JAVA_21;
     }
 
     @Override

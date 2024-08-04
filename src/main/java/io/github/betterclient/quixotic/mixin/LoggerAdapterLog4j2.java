@@ -49,7 +49,7 @@ public class LoggerAdapterLog4j2 extends LoggerAdapterAbstract {
     
     @Override
     public String getType() {
-        return "Log4j2 (via LaunchWrapper)";
+        return "Log4j2 (via Quixotic)";
     }
 
     @Override

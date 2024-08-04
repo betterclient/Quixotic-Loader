@@ -26,6 +26,7 @@ package io.github.betterclient.quixotic.mixin;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import io.github.betterclient.quixotic.QuixoticClassLoader;
 import org.spongepowered.asm.service.IClassTracker;
@@ -37,11 +38,7 @@ import org.spongepowered.asm.service.IClassTracker;
  * into the invalid classes set.
  */
 final class QuixoticClassLoaderUtil implements IClassTracker {
-    /**
-     * ClassLoader for this util
-     */
-    private final QuixoticClassLoader classLoader;
-    
+
     // Reflected fields
     private final List<String> cachedClasses;
     private final List<String> invalidClasses;
@@ -54,18 +51,10 @@ final class QuixoticClassLoaderUtil implements IClassTracker {
      * @param classLoader class loader
      */
     QuixoticClassLoaderUtil(QuixoticClassLoader classLoader) {
-        this.classLoader = classLoader;
-        this.cachedClasses = this.classLoader.cachedClassNames;
-        this.invalidClasses = this.classLoader.nonLoadableClasses;
-        this.classLoaderExceptions = this.classLoader.excludeFromSearch;
-        this.transformerExceptions = this.classLoader.excludeFromTransform;
-    }
-
-    /**
-     * Get the classloader
-     */
-    QuixoticClassLoader getClassLoader() {
-        return this.classLoader;
+        this.cachedClasses = classLoader.cachedClassNames;
+        this.invalidClasses = classLoader.nonLoadableClasses;
+        this.classLoaderExceptions = classLoader.excludeFromSearch;
+        this.transformerExceptions = classLoader.excludeFromTransform;
     }
     
     /**
@@ -91,7 +80,7 @@ final class QuixoticClassLoaderUtil implements IClassTracker {
             restrictions = "PACKAGE_CLASSLOADER_EXCLUSION";
         }
         if (this.isClassTransformerExcluded(className, null)) {
-            restrictions = (restrictions.length() > 0 ? restrictions + "," : "") + "PACKAGE_TRANSFORMER_EXCLUSION";
+            restrictions = (!restrictions.isEmpty() ? restrictions + "," : "") + "PACKAGE_TRANSFORMER_EXCLUSION";
         }
         return restrictions;
     }
@@ -164,20 +153,14 @@ final class QuixoticClassLoaderUtil implements IClassTracker {
      * Get the classloader exclusions from the target classloader
      */
     List<String> getClassLoaderExceptions() {
-        if (this.classLoaderExceptions != null) {
-            return this.classLoaderExceptions;
-        }
-        return Collections.emptyList();
+        return Objects.requireNonNullElse(this.classLoaderExceptions, Collections.emptyList());
     }
     
     /**
      * Get the transformer exclusions from the target classloader
      */
     List<String> getTransformerExceptions() {
-        if (this.transformerExceptions != null) {
-            return this.transformerExceptions;
-        }
-        return Collections.emptyList();
+        return Objects.requireNonNullElse(this.transformerExceptions, Collections.emptyList());
     }
 
 }
