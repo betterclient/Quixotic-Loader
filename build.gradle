@@ -20,7 +20,7 @@ dependencies {
     implementation 'com.google.guava:guava:33.2.1-jre'
 
     implementation "net.fabricmc:sponge-mixin:0.15.0+mixin.0.8.7"
-    implementation "io.github.llamalad7:mixinextras-fabric:0.4.0"
+    implementation "io.github.llamalad7:mixinextras-fabric:0.4.1"
 
     implementation "org.ow2.asm:asm:$asmVersion"
     implementation "org.ow2.asm:asm-analysis:$asmVersion"
