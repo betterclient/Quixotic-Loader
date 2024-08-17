@@ -38,8 +38,6 @@ import org.spongepowered.asm.service.IClassTracker;
  * into the invalid classes set.
  */
 final class QuixoticClassLoaderUtil implements IClassTracker {
-
-    // Reflected fields
     private final List<String> cachedClasses;
     private final List<String> invalidClasses;
     private final List<String> classLoaderExceptions;

@@ -78,7 +78,7 @@ public class MixinServiceQuixotic extends MixinServiceAbstract implements IClass
             f.setAccessible(true);
             f.set(this, Quixotic.getSideName());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error(e);
         }
     }
 
@@ -114,6 +114,11 @@ public class MixinServiceQuixotic extends MixinServiceAbstract implements IClass
             return Phase.DEFAULT;
         }
         return Phase.PREINIT;
+    }
+
+    @Override
+    public CompatibilityLevel getMinCompatibilityLevel() {
+        return CompatibilityLevel.JAVA_8;
     }
 
     @Override

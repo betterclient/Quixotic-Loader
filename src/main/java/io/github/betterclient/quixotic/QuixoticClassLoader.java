@@ -20,8 +20,7 @@ import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 public class QuixoticClassLoader extends URLClassLoader {
-    private ClassLoader parent = getClass().getClassLoader();
-    private final List<URL> listURLs;
+    private final ClassLoader parent = getClass().getClassLoader();
     public List<ClassTransformer> transformers = new ArrayList<>();
     public List<String> excludeFromSearch = new ArrayList<>();
     public List<String> unExcludeFromSearch = new ArrayList<>();
@@ -34,9 +33,12 @@ public class QuixoticClassLoader extends URLClassLoader {
 
     public static Logger LOGGER;
 
+    static {
+        registerAsParallelCapable();
+    }
+
     public QuixoticClassLoader(URL[] urls, Logger logger) {
         super(urls, null);
-        this.listURLs = new ArrayList<>(Arrays.asList(urls));
         LOGGER = logger;
 
         this.addExclusion("java.");
@@ -69,7 +71,6 @@ public class QuixoticClassLoader extends URLClassLoader {
 
     @Override
     public void addURL(URL url) {
-        listURLs.add(url);
         super.addURL(url);
     }
 
@@ -136,12 +137,12 @@ public class QuixoticClassLoader extends URLClassLoader {
 
                         Package pkg = getDefinedPackage(packageName);
                         signers = entry.getCodeSigners();
-                        if (pkg == null) pkg = definePackage(packageName, manifest, jarURLConnection.getJarFileURL());
+                        if (pkg == null) definePackage(packageName, manifest, jarURLConnection.getJarFileURL());
                     }
                 } else {
                     Package pkg = getDefinedPackage(packageName);
                     if (pkg == null) {
-                        pkg = definePackage(packageName, null, null, null, null, null, null, null);
+                        definePackage(packageName, null, null, null, null, null, null, null);
                     }
                 }
             }
