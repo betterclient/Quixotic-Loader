@@ -1,5 +1,6 @@
 package io.github.betterclient.quixotic;
 
+import io.github.betterclient.quixotic.mixin.Proxy;
 import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
@@ -10,8 +11,8 @@ import java.net.URLClassLoader;
 import java.net.URLConnection;
 import java.security.CodeSigner;
 import java.security.CodeSource;
+import java.security.cert.Certificate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -125,18 +126,13 @@ public class QuixoticClassLoader extends URLClassLoader {
             final String fileName = name.replace('.', '/').concat(".class"); //This is an url loader after all
             URLConnection urlConnection = findCodeSourceConnectionFor(fileName);
 
-            CodeSigner[] signers = null;
-
             if (lastDot > -1 && !name.startsWith("net.minecraft.")) {
                 if (urlConnection instanceof final JarURLConnection jarURLConnection) {
                     final JarFile jarFile = jarURLConnection.getJarFile();
 
                     if (jarFile != null && jarFile.getManifest() != null) {
                         final Manifest manifest = jarFile.getManifest();
-                        final JarEntry entry = jarFile.getJarEntry(fileName);
-
                         Package pkg = getDefinedPackage(packageName);
-                        signers = entry.getCodeSigners();
                         if (pkg == null) definePackage(packageName, manifest, jarURLConnection.getJarFileURL());
                     }
                 } else {
@@ -147,10 +143,10 @@ public class QuixoticClassLoader extends URLClassLoader {
                 }
             }
 
-            byte[] unTransformedClass = this.getClassBytes(name);
-            byte[] transformedClass = this.transformClass(name, unTransformedClass);
+            byte[] transformedClass = this.findClassBytes(name, true);
 
-            CodeSource codeSource = urlConnection == null ? null : new CodeSource(urlConnection.getURL(), signers);
+            //Use no signing
+            CodeSource codeSource = urlConnection == null ? null : new CodeSource(urlConnection.getURL(), (Certificate[]) null);
             Class<?> clazz = defineClass(name, transformedClass, 0, transformedClass.length, codeSource);
 
             this.cachedClasses.add(clazz);
@@ -163,11 +159,12 @@ public class QuixoticClassLoader extends URLClassLoader {
         }
     }
 
-    private byte[] transformClass(String name, byte[] classBytes) {
+    private byte[] transformClass(String name, byte[] classBytes, boolean transformAll) {
         for(ClassTransformer transformer : this.transformers) {
-            byte[] output = transformer.transform(name, classBytes);
+            if (transformer instanceof Proxy && !transformAll) continue;
 
-            classBytes = output == null ? classBytes : output; //Java ClassFileTransformer behaviour
+            byte[] output = transformer.transform(name, classBytes);
+            classBytes = (output == null || output.length == 0) ? classBytes : output; //Java ClassFileTransformer behaviour
         }
 
         return classBytes;
@@ -189,7 +186,11 @@ public class QuixoticClassLoader extends URLClassLoader {
         return null;
     }
 
-    public byte[] getClassBytes(String name) throws IOException {
+    public byte[] findClassBytes(String name, boolean transformAll) throws IOException {
+        return this.transformClass(name, getClassBytes(name), transformAll);
+    }
+
+    private byte[] getClassBytes(String name) throws IOException {
         if (negativeResourceCache.contains(name)) {
             return null;
         } else if (resourceCache.containsKey(name)) {

@@ -319,7 +319,7 @@ public class MixinServiceQuixotic extends MixinServiceAbstract implements IClass
 
     @Deprecated
     public byte[] getClassBytes(String name, String transformedName) throws IOException {
-        byte[] classBytes = Quixotic.classLoader.getClassBytes(name);
+        byte[] classBytes = Quixotic.classLoader.findClassBytes(name, false);
         if (classBytes != null) {
             return classBytes;
         }
